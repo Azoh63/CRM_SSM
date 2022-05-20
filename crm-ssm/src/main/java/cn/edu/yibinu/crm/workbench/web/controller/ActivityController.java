@@ -16,13 +16,17 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -42,18 +46,19 @@ public class ActivityController {
     private ActivityRemarkService activityRemarkService;
 
     @RequestMapping("/workbench/activity/index.do")
-    public String index(HttpServletRequest request) {
+    public String index(HttpServletRequest request, Model model) {
         //去数据库查所有的用户信息
         List<User> userList = userService.queryAllUsers();
         //将用户信息封装到request域中
-        request.setAttribute("userList",userList);
+        //request.setAttribute("userList",userList);
+        model.addAttribute("userList",userList);
+
 
         //验证是否取出用户信息，遍历list
         /*for (User user : userList){
             System.out.println(user.getName());
         }*/
-
-        //跳转页面到index.jsp
+        //跳转页面到index.html
         return "workbench/activity/index";
     }
 
@@ -87,9 +92,13 @@ public class ActivityController {
         return object;
     }
 
-    @RequestMapping(value = "/workbench/activity/queryActivityByConditionForPage.do",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/workbench/activity/queryActivityByConditionForPage.do")
     @ResponseBody
-    public Object queryActivityByConditionForPage(@RequestParam String name, @RequestParam String owner, @RequestParam String startDate, @RequestParam String endDate, @RequestParam Integer pageNo, @RequestParam Integer pageSize){
+    public Object queryActivityByConditionForPage(String name, String owner, String startDate, String endDate, Integer pageNo, Integer pageSize){
+        //查询一个用户信息列表
+        /*List<User> userList = userService.queryAllUsers();
+        session.setAttribute("userList",userList);*/
+
         Map<String,Object> map = new HashMap<>();
         map.put("name",name);
         map.put("owner",owner);
@@ -509,17 +518,17 @@ public class ActivityController {
      * @return 是一个视图
      */
     @RequestMapping("/workbench/activity/getActivityDetail.do")
-    public String getActivityDetail(String id, HttpServletRequest request) {
+    public String getActivityDetail(String id,Model model) {
         //获取市场活动对象
         Activity activity = activityService.queryActivityByIdForDetail(id);
 
         //将获取到的市场活动封装到request
-        request.setAttribute("activity",activity);
+        model.addAttribute("activity",activity);
 
         //查询市场活动相关备注
         List<ActivityRemark> remarkList = activityRemarkService.queryActivityRemarkByActivityId(id);
 
-        request.setAttribute("remarkList",remarkList);
+        model.addAttribute("remarkList",remarkList);
 
         //返回给视图解析器
         return "workbench/activity/detail";

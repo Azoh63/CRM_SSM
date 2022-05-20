@@ -1,19 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
-request.getContextPath() + "/";
-%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page isELIgnored="false" %>
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<base href="<%=basePath%>">
+	<base th:href="@{/}">
 <meta charset="UTF-8">
-
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-<link rel="stylesheet" type="text/css" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" rel="stylesheet" type="text/css" >
 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
@@ -21,8 +13,7 @@ request.getContextPath() + "/";
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
 <script type="text/javascript" src="jquery/bs_pagination-master/localization/en.js"></script>
-
-<script type="text/javascript">
+	<script type="text/javascript">
 
 	$(function(){
 		$("#createActivityBtn").click(function () {
@@ -362,7 +353,7 @@ request.getContextPath() + "/";
 		//var pageSize = 10;	//默认是10
 
 		$.ajax({
-			url:"workbench/activity/queryActivityByConditionForPage.do",
+			url:"/crm/workbench/activity/queryActivityByConditionForPage.do",
 			data:{
 				name:name,
 				owner:owner,
@@ -371,7 +362,7 @@ request.getContextPath() + "/";
 				pageNo:pageNo,
 				pageSize:pageSize
 			},
-			type:"post",
+			type:"get",
 			dateType:"json",
 			success:function (data) {
 				//获取总页数
@@ -449,13 +440,15 @@ request.getContextPath() + "/";
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-marketActivityOwner">
-								  <%--<option>zhangsan</option>
+								<select class="form-control" id="create-marketActivityOwner" >
+								  <!--<option>zhangsan</option>
 								  <option>lisi</option>
-								  <option>wangwu</option>--%>
-									<c:forEach items="${userList}" var="u">
+								  <option>wangwu</option>-->
+									<option></option>
+									<option th:each="user:${#httpServletRequest.getAttribute('userList')}" th:text="${user.name}" th:value="${user.id}"></option>
+									<!--<c:forEach items="${userList}" var="u">
 										<option value="${u.id}">${u.name}</option>
-									</c:forEach>
+									</c:forEach>-->
 								</select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -517,13 +510,15 @@ request.getContextPath() + "/";
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-marketActivityOwner">
-								  <%--<option>zhangsan</option>
+									<option></option>
+									<option th:each="user:${#httpServletRequest.getAttribute('userList')}" th:text="${user.name}" th:value="${user.id}"></option>
+								  <!--<option>zhangsan</option>
 								  <option>lisi</option>
-								  <option>wangwu</option>--%>
+								  <option>wangwu</option>
 								  <option></option>
 								  <c:forEach items="${userList}" var="u">
 									  <option value="${u.id}">${u.name}</option>
-								  </c:forEach>
+								  </c:forEach>-->
 								</select>
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -676,26 +671,26 @@ request.getContextPath() + "/";
 						</tr>
 					</thead>
 					<tbody id="activityTbody">
-						<%--<tr class="active">
+						<!--<tr class="active">
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
                             <td>zhangsan</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 						</tr>
                         <tr class="active">
                             <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>
+                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
                             <td>zhangsan</td>
                             <td>2020-10-10</td>
                             <td>2020-10-20</td>
-                        </tr>--%>
+                        </tr>-->
 					</tbody>
 				</table>
 			</div>
 
 			<div id="paginationBox"></div>
-			<%--<div style="height: 50px; position: relative;top: 30px;">
+			<!--<div style="height: 50px; position: relative;top: 30px;">
 				<div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b id="totalRowsB">50</b>条记录</button>
 				</div>
@@ -728,7 +723,7 @@ request.getContextPath() + "/";
 						</ul>
 					</nav>
 				</div>
-			</div>--%>
+			</div>-->
 			
 		</div>
 		

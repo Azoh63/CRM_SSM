@@ -70,6 +70,8 @@
             <!--这里需要排除登录页本身的路径，否则会进入死循环-->
             <mvc:exclude-mapping path="/settings/qx/user/toLogin.do"/>
             <mvc:exclude-mapping path="/settings/qx/user/login.do"/>
+            <mvc:exclude-mapping path="/settings/qx/user/registerPage.do"/>
+            <mvc:exclude-mapping path="/settings/qx/user/register.do"/>
 
             <bean class="cn.edu.yibinu.crm.settings.web.interceptor.LoginInterceptor" id="loginInterceptor"/>
         </mvc:interceptor>

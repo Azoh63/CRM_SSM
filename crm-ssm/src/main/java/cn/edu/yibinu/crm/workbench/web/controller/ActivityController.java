@@ -16,7 +16,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -229,7 +226,7 @@ public class ActivityController {
         //设置响应类型
         response.setContentType("application/octet-stream;charset=utf-8");
         //设置响应头信息
-        response.addHeader("Content-Disposition","attachment;filename=activityList2222.xls");
+        response.addHeader("Content-Disposition","attachment;filename=activityListForAll.xls");
 
         //先准备数据
         List<Activity> activityList = activityService.queryActivityList();
@@ -323,6 +320,47 @@ public class ActivityController {
 
            outputStream.flush();
            wb.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/workbench/activity/activityFileTemplate.do")
+    public void activityFileTemplate(HttpServletResponse response){
+        //设置响应类型
+        response.setContentType("application/octet-stream;charset=utf-8");
+        //设置响应头信息
+        response.addHeader("Content-Disposition","attachment;filename=activityTemplate.xls");
+
+        HSSFRow row = null;
+        HSSFCell cell = null;
+
+        try{
+            //将文件填充数据
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet("市场活动列表");
+
+            //制作表头
+            row = sheet.createRow(0);
+            cell = row.createCell(0);
+            cell.setCellValue("所有者");
+            cell = row.createCell(1);
+            cell.setCellValue("名字");
+            cell = row.createCell(2);
+            cell.setCellValue("开始日期");
+            cell = row.createCell(3);
+            cell.setCellValue("结束日期");
+            cell = row.createCell(4);
+            cell.setCellValue("成本");
+            cell = row.createCell(5);
+            cell.setCellValue("描述");
+
+            OutputStream outputStream = response.getOutputStream();
+            //行和列都写完了
+            wb.write(outputStream);
+
+            outputStream.flush();
+            wb.close();
         }catch (Exception e){
             e.printStackTrace();
         }

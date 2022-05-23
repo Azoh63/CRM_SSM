@@ -278,10 +278,15 @@
 			});
 		});
 
+		//后台批量下载市场活动
 		$("#exportActivityAllBtn").click(function () {
 			window.location.href="workbench/activity/activityFileDownloadForAll.do";
 		});
 
+		//下载模板excel
+		$("#downloadTemplate").click(function () {
+			window.location.href="workbench/activity/activityFileTemplate.do";
+		});
 
 		$("#importActivityBtn").click(function () {
 
@@ -353,7 +358,7 @@
 		//var pageSize = 10;	//默认是10
 
 		$.ajax({
-			url:"/crm/workbench/activity/queryActivityByConditionForPage.do",
+			url:"workbench/activity/queryActivityByConditionForPage.do",
 			data:{
 				name:name,
 				owner:owner,
@@ -579,6 +584,8 @@
                     </div>
                     <div style="position: relative;top: 40px; left: 50px;">
                         <input type="file" id="activityFile">
+						<br>
+						<button id="downloadTemplate">点击下载模板</button>
                     </div>
                     <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;" >
                         <h3>重要提示</h3>

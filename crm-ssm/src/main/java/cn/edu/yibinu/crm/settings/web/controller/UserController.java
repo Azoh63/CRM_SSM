@@ -3,6 +3,7 @@ package cn.edu.yibinu.crm.settings.web.controller;
 import cn.edu.yibinu.crm.commons.domain.ReturnObject;
 import cn.edu.yibinu.crm.commons.utils.Contents;
 import cn.edu.yibinu.crm.commons.utils.DateFormatUtils;
+import cn.edu.yibinu.crm.commons.utils.UUIDUtils;
 import cn.edu.yibinu.crm.settings.domain.User;
 import cn.edu.yibinu.crm.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,35 @@ public class UserController {
     @RequestMapping("/settings/qx/user/toLogin.do")
     public String loginPage(){
         return "settings/qx/user/login";
+    }
+
+    /**
+     * 使用controller来访问register.jsp
+     * @return 注册页面
+     */
+    @RequestMapping("/settings/qx/user/registerPage.do")
+    public String registerPage(){
+        return "settings/qx/user/register";
+    }
+
+    @RequestMapping("/settings/toSettingsIndex.do")
+    public String toSettingsIndex(){
+        return "settings/index";
+    }
+
+    @RequestMapping("/dictionary/toDictionaryIndex.do")
+    public String toDictionaryIndex(){
+        return "settings/dictionary/index";
+    }
+
+    @RequestMapping("/settings/type/index.do")
+    public String toDictionaryTypeIndex(){
+        return "settings/dictionary/type/index";
+    }
+
+    @RequestMapping("/settings/value/index.do")
+    public String toDictionaryValueIndex(){
+        return "settings/dictionary/value/index";
     }
 
     /**
@@ -116,5 +146,36 @@ public class UserController {
 
         //跳转到首页（重定向）
         return "redirect:/";
+    }
+
+    /**
+     * 注册业务
+     * @param user
+     * @param request
+     * @param session
+     * @param response
+     * @return
+     */
+    @RequestMapping("/settings/qx/user/register.do")
+    @ResponseBody
+    public Object register(User user,  HttpServletRequest request, HttpSession session, HttpServletResponse response){
+        ReturnObject returnObject = new ReturnObject();
+        //User user = userService.queryUserByLoginActAndPwd(map);
+        user.setId(UUIDUtils.getUUID());
+        //user.setCreatetime(DateFormatUtils.dateTimeFormat(new Date()));
+        int ret = userService.addUser(user);
+
+        if (ret > 0 ){
+            returnObject.setCode(Contents.RETURN_CODE_SUCCESS);
+        }else{
+            returnObject.setCode(Contents.RETURN_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后...");
+        }
+        return returnObject;
+    }
+
+    @RequestMapping("/workbench/settings/qx/user/toRegisterIndex.do")
+    public String toRegisterIndex(){
+        return "settings/qx/user/index";
     }
 }

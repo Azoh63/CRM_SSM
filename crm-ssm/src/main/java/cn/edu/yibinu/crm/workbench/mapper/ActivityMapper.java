@@ -122,18 +122,9 @@ public interface ActivityMapper {
      * @return
      */
     Activity selectActivityByIdForDetail(String id);
+
+    List<Activity> selectActivityByNameForConvert(String activityName);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

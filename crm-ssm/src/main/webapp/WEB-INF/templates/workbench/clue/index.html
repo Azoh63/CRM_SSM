@@ -31,11 +31,9 @@
             $("#create-mphone").val("");
             $("#create-state").val("");
             $("#create-source").val("");
-            $("#create-create_by").val("");
-            $("#create-create_time").val("");
             $("#create-description").val("");
-            $("#create-contact_summary").val("");
-            $("#create-next_contact_time").val("");
+            $("#create-contactSummary").val("");
+            $("#create-nextContactTime").val("");
             $("#create-address").val("");
 
 			//打开创建线索模态窗口
@@ -56,11 +54,9 @@
 		    var mphone = $("#create-mphone").val();
 		    var state = $("#create-state").val();
 		    var source = $("#create-source").val();
-		    var createBy = $("#create-create_by").val();
-		    var createTime = $("#create-create_time").val();
 		    var description = $("#create-description").val();
-		    var contactSummary = $("#create-contact_summary").val();
-		    var nextContactTime = $("#create-next_contact_time").val();
+		    var contactSummary = $("#create-contactSummary").val();
+		    var nextContactTime = $("#create-nextContactTime").val();
 		    var address = $("#create-address").val();
 
 		    //表单验证
@@ -89,8 +85,6 @@
                     mphone:mphone,
                     state:state,
                     source:source,
-                    createBy:createBy,
-                    createTime:createTime,
                     description:description,
                     contactSummary:contactSummary,
                     nextContactTime:nextContactTime,

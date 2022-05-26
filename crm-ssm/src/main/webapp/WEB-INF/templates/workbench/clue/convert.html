@@ -1,11 +1,12 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+	<base th:href="@{/}">
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 
 
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
@@ -21,6 +22,56 @@
 				$("#create-transaction2").hide(200);
 			}
 		});
+
+		//通过市场活动模糊查询市场活动列表
+		$("#activityName").keyup(function () {
+			//收集参数
+			var activityName = $("#activityName").val();
+			var html = "";
+			$.ajax({
+				url:"workbench/clue/queryActivityList.do",
+				data:{
+					activityName:activityName
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					$.each(data,function (index, activity) {
+						html += '<tr>';
+						html += '<td><input type="radio" name="activity" value="'+activity.id+'" /></td>';
+						html += '<td>'+activity.name+'</td>';
+						html += '<td>'+activity.startDate+'</td>';
+						html += '<td>'+activity.endDate+'</td>';
+						html += '<td>'+activity.owner+'</td>';
+						html += '</tr>';
+					});
+					$("#activityBody").html(html);
+				}
+			});
+		});
+
+		//选择了一个市场活动单选框
+		$("#activityBody").on("click","input[type=radio]",function () {
+			//alert(this.value);
+			//获取到的activityId去后台查activity对象
+			var acitvityId = this.value;
+			$.ajax({
+				url:"workbench/clue/queryActivityById.do",
+				data:{
+					activityId:acitvityId
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					//关闭模态窗口
+					$("#searchActivityModal").modal("hide");
+					//填入市场活动的数据
+					$("#activity").val(data.name);
+					$("#activityHiddenId").val(data.id);
+				}
+			})
+
+		})
 	});
 </script>
 
@@ -41,7 +92,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input id="activityName" type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -57,8 +108,8 @@
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="activityBody">
+							<!--<tr>
 								<td><input type="radio" name="activity"/></td>
 								<td>发传单</td>
 								<td>2020-10-10</td>
@@ -71,7 +122,7 @@
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
+							</tr>-->
 						</tbody>
 					</table>
 				</div>
@@ -80,13 +131,13 @@
 	</div>
 
 	<div id="title" class="page-header" style="position: relative; left: 20px;">
-		<h4>转换线索 <small>李四先生-动力节点</small></h4>
+		<h4>转换线索 <small>[[${#httpServletRequest.getAttribute("clue").fullname}]] [[${#httpServletRequest.getAttribute("clue").appellation}]]-[[${#request.getAttribute("clue").company}]]</small></h4>
 	</div>
-	<div id="create-customer" style="position: relative; left: 40px; height: 35px;">
-		新建客户：动力节点
+	<div id="create-customer" style="position: relative; left: 40px; height: 35px;" th:text="|新建客户:${#request.getAttribute('clue').company}|">
+		新建客户：宜宾学院
 	</div>
-	<div id="create-contact" style="position: relative; left: 40px; height: 35px;">
-		新建联系人：李四先生
+	<div id="create-contact" style="position: relative; left: 40px; height: 35px;" th:text="|新建联系人:${#request.getAttribute('clue').fullname}${#request.getAttribute('clue').appellation}|">
+		新建联系人：龚某某先生
 	</div>
 	<div id="create-transaction1" style="position: relative; left: 40px; height: 35px; top: 25px;">
 		<input type="checkbox" id="isCreateTransaction"/>
@@ -111,7 +162,8 @@
 		    <label for="stage">阶段</label>
 		    <select id="stage"  class="form-control">
 		    	<option></option>
-		    	<option>资质审查</option>
+				<option th:each="dicValue:${#request.getAttribute('dicValueList')}" th:text="${dicValue.text}" th:value="${dicValue.id}"></option>
+		    	<!--<option>资质审查</option>
 		    	<option>需求分析</option>
 		    	<option>价值建议</option>
 		    	<option>确定决策者</option>
@@ -119,11 +171,12 @@
 		    	<option>谈判/复审</option>
 		    	<option>成交</option>
 		    	<option>丢失的线索</option>
-		    	<option>因竞争丢失关闭</option>
+		    	<option>因竞争丢失关闭</option>-->
 		    </select>
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
-		    <label for="activity">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#searchActivityModal" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
+			  <label for="activity">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#searchActivityModal" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
+			  <input type="hidden" id="activityHiddenId">
 		    <input type="text" class="form-control" id="activity" placeholder="点击上面搜索" readonly>
 		  </div>
 		</form>
@@ -132,7 +185,7 @@
 	
 	<div id="owner" style="position: relative; left: 40px; height: 35px; top: 50px;">
 		记录的所有者：<br>
-		<b>zhangsan</b>
+		<b th:text="${#request.getAttribute('clue').owner}">龚某</b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
 		<input class="btn btn-primary" type="button" value="转换">

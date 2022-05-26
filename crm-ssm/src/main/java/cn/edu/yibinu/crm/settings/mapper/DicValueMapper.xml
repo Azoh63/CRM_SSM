@@ -130,4 +130,11 @@
       type_code = #{typeCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <select id="selectDicValueForConvert" parameterType="string" resultMap="BaseResultMap">
+    select id, value, text, order_no, type_code
+    from tbl_dic_value
+    where type_code=#{typeCode}
+    order by order_no asc
+  </select>
 </mapper>

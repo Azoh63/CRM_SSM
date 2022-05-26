@@ -1,6 +1,10 @@
 package cn.edu.yibinu.crm.workbench.mapper;
 
+import cn.edu.yibinu.crm.workbench.domain.Activity;
 import cn.edu.yibinu.crm.workbench.domain.ClueActivityRelation;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ClueActivityRelationMapper {
     /**
@@ -50,4 +54,19 @@ public interface ClueActivityRelationMapper {
      * @mbggenerated Sat May 21 15:17:35 CST 2022
      */
     int updateByPrimaryKey(ClueActivityRelation record);
+
+    /**
+     * 插入线索和市场活动联系的信息
+     * @param carList 线索市场活动联系的对象
+     * @return
+     */
+    int insertClueActivityRelation(List<ClueActivityRelation> carList);
+
+    /**
+     * 查询框模糊查询
+     * @param name
+     * @param clueId
+     * @return
+     */
+    List<Activity> selectActivityByNameForRelation(@Param("name") String name, @Param("clueId") String clueId);
 }

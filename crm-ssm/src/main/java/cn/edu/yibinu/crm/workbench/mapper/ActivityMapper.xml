@@ -324,6 +324,14 @@
     left join tbl_user u3 on a.edit_by=u3.id
     where a.id=#{id}
   </select>
+
+  <select id="selectActivityByNameForConvert" parameterType="string" resultMap="BaseResultMap">
+    select a.id,a.name,a.start_date,a.end_date,u.name as owner
+    from tbl_activity a
+    join tbl_user u on a.owner=u.id
+    where a.name like '%' #{activityName} '%'
+    order by a.create_time desc
+  </select>
 </mapper>
 
 

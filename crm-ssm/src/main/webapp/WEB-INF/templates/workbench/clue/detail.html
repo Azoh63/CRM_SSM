@@ -8,7 +8,7 @@
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 
 	//默认情况下取消和保存按钮是隐藏的
 	var cancelAndSaveBtnDefault = true;
@@ -47,7 +47,202 @@
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
+
+		//页面一加载后就去查询出所有相关的线索备注
+		getClueRemark();
+
+		//关联市场活动按钮
+		$("#contactActivityBtn").click(function () {
+			var clueId = [[${#httpServletRequest.getAttribute("clue").id}]];
+			var html = "";
+			$.ajax({
+				url:"workbench/clue/queryActivityForContactClue.do",
+				data:{
+					clueId:clueId
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					if(data.code == 1){
+						$.each(data.retData,function (index,activity) {
+							//填入数据
+							html += "<tr>";
+							html += "<td><input type=\"checkbox\" value=\""+activity.id+"\"/></td>";
+							html += "<td>"+activity.name+"</td>";
+							html += "<td>"+activity.startDate+"</td>";
+							html += "<td>"+activity.endDate+"</td>";
+							html += "<td>"+activity.owner+"</td>";
+							html += "</tr>";
+						});
+						//查询成功，填入数据，打开模态窗口
+
+						$("#activityContactClueTbody").html(html);
+						$("#bundModal").modal("show");
+
+					}
+				}
+			});
+		});		//去选择关联市场活动的按钮单击事件
+
+		//真正去关联的市场活动的单击事件
+		$("#contactBtn").click(function () {
+			var relationData = "";
+			//封装参数
+			$.each($("#activityContactClueTbody input[type=checkbox]:checked"),function (index, checkedInput) {
+				relationData += "activityId=" + checkedInput.value + "&";
+			});
+			if(relationData.endsWith("&")){
+				relationData += "clueId=" + [[${#httpServletRequest.getAttribute("clue").id}]];
+			}
+
+			$.ajax({
+				url:"workbench/clue/addClueActivityRelation.do",
+				data:relationData,
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.code == 1){
+						//关闭模态窗口
+						$("#bundModal").modal("hide");
+					}else{
+						$("#bundModal").modal("show");
+						alert(data.message);
+					}
+				}
+			})
+		});
+		$("#checkAll").click(function () {
+			//复选框（全选和取消全选）
+			if($("#checkAll").prop("checked")){
+				//全选了
+				$.each($("#activityContactClueTbody input[type=checkbox]"),function (index, checkSingle) {
+					$(checkSingle).prop("checked",true);
+				});
+			}else{
+				//取消全选
+				$.each($("#activityContactClueTbody input[type=checkbox]"),function (index, checkSingle) {
+					$(checkSingle).prop("checked",false);
+				});
+			}
+		});
+
+		//这里的表格下面的复选框单击了都会响应的函数
+		$("#activityTable").on("click",$("input[type=checkbox]"),function () {
+			//判断单个的数量是否是全选数量
+			if($("#activityContactClueTbody input[type=checkbox]").size() == $("#activityContactClueTbody input[type=checkbox]:checked").size()){
+				$("#checkAll").prop("checked",true);
+			}else{
+				$("#checkAll").prop("checked",false);
+			}
+		});
+
+		//查询框模糊查询
+		$("#searchActivityForRelation").keyup(function () {
+			var html = "";
+			var clueId = [[${#httpServletRequest.getAttribute("clue").id}]];
+			var name = $("#searchActivityForRelation").val();
+			//键盘弹起来就发出请求
+			$.ajax({
+				url:"workbench/clue/queryActivityByNameForRelation.do",
+				data:{
+					clueId:clueId,
+					name:name
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					$.each(data,function () {
+						//填入数据
+						html += "<tr>";
+						html += "<td><input type=\"checkbox\" value=\""+this.id+"\"/></td>";
+						html += "<td>"+this.name+"</td>";
+						html += "<td>"+this.startDate+"</td>";
+						html += "<td>"+this.endDate+"</td>";
+						html += "<td>"+this.owner+"</td>";
+						html += "</tr>";
+					});
+
+					$("#activityContactClueTbody").html(html);
+				}
+
+			});
+		});
+
+		//添加一条线索备注并保存
+		$("#saveAddClueRemarkBtn").click(function () {
+			//获取备注具体信息
+			var noteContent = $("#remark").val();
+			var clueId = [[${#httpServletRequest.getAttribute("clue").id}]];
+
+			//表单验证
+			if (noteContent == ""){
+				alert("备注内容不能为空");
+				return;
+			}
+
+			//通过表单验证，发出请求
+			$.ajax({
+				url:"workbench/clue/addClueRemark.do",
+				data:{
+					noteContent:noteContent,
+					clueId:clueId
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.code == 1){
+						//提示添加成功
+						alert("添加成功");
+						//清空文本框中的内容
+						$("#remark").val("");
+						//并且还需要将返回的这一条数据显示在前台
+
+
+
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+		});
 	});
+
+	//刷新线索备注的列表
+	function getClueRemark(){
+		//获取线索id
+		var clueId = [[${#httpServletRequest.getAttribute("clue").id}]];
+		var html = "";
+
+		//根据clueId查询列表
+		$.ajax({
+			url:"workbench/clue/queryClueRemarkList.do",
+			data:{
+				clueId:clueId
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				$.each(data,function (index, obj) {
+					html += "<div class=\"remarkDiv\" style=\"height: 60px;\">";
+					html += "<img title=\"zhangsan\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
+					html += "<div style=\"position: relative; top: -40px; left: 40px;\" >";
+					html += "<h5>"+obj.noteContent+"</h5>";
+					html += "<font color=\"gray\">线索</font> <font color=\"gray\">-</font> <b>"+[[${#httpServletRequest.getAttribute("clue").fullname}]]+"</b> <small style=\"color: gray;\">"+obj.createTime +"由"+obj.createBy+"</small>";
+					html += "<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
+					html += "<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+					html += "nbsp;&nbsp;&nbsp;&nbsp;";
+					html += "<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+					html += "</div>";
+					html += "</div>";
+					html += "</div>";
+				});
+
+				$("#remarkDiv").before(html);
+
+			}
+		});
+	}
+
 	
 </script>
 
@@ -68,7 +263,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询" id="searchActivityForRelation">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -76,7 +271,7 @@
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
+								<td><input type="checkbox" id="checkAll"/></td>
 								<td>名称</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
@@ -84,8 +279,8 @@
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="activityContactClueTbody">
+							<!--<tr>
 								<td><input type="checkbox"/></td>
 								<td>发传单</td>
 								<td>2020-10-10</td>
@@ -98,13 +293,13 @@
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
+							</tr>-->
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="contactBtn">关联</button>
 				</div>
 			</div>
 		</div>
@@ -122,8 +317,7 @@
 			<h3 th:inline="text">[[${#request.getAttribute("clue").fullname}]] [[${#request.getAttribute("clue").appellation}]]<small th:text="${#request.getAttribute('clue').company}"></small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
-			
+			<button type="button" class="btn btn-default" th:onclick="'window.location.href=\''+ @{workbench/clue/toConvert.do/{clueId}(clueId=${#httpServletRequest.getAttribute('clue').id})}+'\';'"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 		</div>
 	</div>
 	
@@ -224,7 +418,7 @@
 		</div>
 		
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
+		<!--<div class="remarkDiv" style="height: 60px;">
 			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
 				<h5>哎呦！</h5>
@@ -237,7 +431,7 @@
 			</div>
 		</div>
 		
-		<!-- 备注2 -->
+		&lt;!&ndash; 备注2 &ndash;&gt;
 		<div class="remarkDiv" style="height: 60px;">
 			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
@@ -249,14 +443,14 @@
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 				</div>
 			</div>
-		</div>
+		</div>-->
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button id="saveAddClueRemarkBtn" type="button" class="btn btn-primary">保存</button>
 				</p>
 			</form>
 		</div>
@@ -299,7 +493,7 @@
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+				<a href="javascript:void(0);" id="contactActivityBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
 		</div>
 	</div>

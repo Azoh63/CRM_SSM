@@ -1,6 +1,7 @@
 package cn.edu.yibinu.crm.workbench.service;
 
 import cn.edu.yibinu.crm.settings.domain.DicValue;
+import cn.edu.yibinu.crm.workbench.domain.Activity;
 import cn.edu.yibinu.crm.workbench.domain.Clue;
 
 import java.util.List;
@@ -16,4 +17,14 @@ public interface ClueService {
     int queryClueByConditionForTotal();
 
     Clue queryClueForDetail(String id);
+
+    List<Activity> queryActivityForContactClue(String clueId);
+
+    Clue queryClueByIdForConvert(String id);
+
+    List<DicValue> queryDicValueForConvert(String typeCode);
+
+    List<Activity> queryActivityByNameForConvert(String activityName);
+
+    Activity queryActivityById(String activityId);
 }

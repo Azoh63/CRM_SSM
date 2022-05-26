@@ -165,4 +165,46 @@
       clue_id = #{clueId,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <insert id="insertClueRemark" parameterType="cn.edu.yibinu.crm.workbench.domain.ClueRemark">
+    insert into tbl_clue_remark(
+      id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, clue_id
+    )values(
+      #{id},#{noteContent},#{createBy},#{createTime},#{editBy},#{editTime},#{editFlag},#{clueId}
+    )
+  </insert>
+
+  <select id="selectClueRemarkList" parameterType="string" resultMap="BaseResultMap">
+    select
+    cr.id, cr.note_content, u.name as create_by, cr.create_time, cr.edit_by, cr.edit_time, cr.edit_flag, cr.clue_id
+    from tbl_clue_remark cr
+    join tbl_user u on cr.create_by=u.id
+    where clue_id=#{clueId}
+    order by cr.create_time desc
+  </select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

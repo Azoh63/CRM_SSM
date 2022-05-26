@@ -1,6 +1,7 @@
 package cn.edu.yibinu.crm.workbench.mapper;
 
 import cn.edu.yibinu.crm.settings.domain.DicValue;
+import cn.edu.yibinu.crm.workbench.domain.Activity;
 import cn.edu.yibinu.crm.workbench.domain.Clue;
 
 import java.util.List;
@@ -87,6 +88,18 @@ public interface ClueMapper {
      * @return
      */
     Clue selectClueForDetail(String id);
+
+    /**
+     * 查找没有和线索联系的市场活动
+     * @return
+     */
+    List<Activity> selectActivityForContactClue(String clueId);
+
+    /**
+     * 通过线索id找到对应线索（是给convert页面使用的clue对象）
+     * @return
+     */
+    Clue selectClueByIdForConvert(String id);
 }
 
 

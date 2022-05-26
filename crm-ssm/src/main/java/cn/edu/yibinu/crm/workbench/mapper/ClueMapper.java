@@ -107,6 +107,13 @@ public interface ClueMapper {
      * @return
      */
     Clue selectClueById(String id);
+
+    /**
+     * 转换完成后删除线索
+     * @param clueId
+     * @return
+     */
+    int deleteClueById(String clueId);
 }
 
 

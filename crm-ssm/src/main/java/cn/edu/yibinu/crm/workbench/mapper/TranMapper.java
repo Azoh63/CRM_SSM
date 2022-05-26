@@ -50,4 +50,10 @@ public interface TranMapper {
      * @mbggenerated Thu May 26 14:43:50 CST 2022
      */
     int updateByPrimaryKey(Tran record);
+
+    /**
+     * 插入一条交易对象
+     * @return
+     */
+    int insertTran(Tran tran);
 }

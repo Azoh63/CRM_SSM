@@ -72,6 +72,13 @@ public interface ClueRemarkMapper {
      * @return
      */
     List<ClueRemark> selectClueRemarkListForConvert(String clueId);
+
+    /**
+     * 删除备注列表
+     * @param clueId
+     * @return
+     */
+    int deleteRemarkByClueId(String clueId);
 }
 
 

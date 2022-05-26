@@ -283,4 +283,13 @@
       next_contact_time = #{nextContactTime,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <insert id="insertTran" parameterType="cn.edu.yibinu.crm.workbench.domain.Tran">
+    insert into tbl_tran(
+      id,  money, name, expected_date, customer_id, stage, source,
+      contacts_id, create_by, create_time
+    )values (
+      #{id},#{money},#{name},#{expectedDate},#{customerId},#{stage},#{source},#{contactsId},#{createBy},#{createTime}
+    )
+  </insert>
 </mapper>

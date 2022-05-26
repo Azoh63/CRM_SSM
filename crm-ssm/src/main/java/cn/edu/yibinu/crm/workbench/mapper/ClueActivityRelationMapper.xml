@@ -147,6 +147,17 @@
       where clue_id=#{clueId}
     ) and a.name like '%' #{name} '%'
   </select>
+
+  <select id="selectRelationByClueId" parameterType="string" resultMap="BaseResultMap">
+    select id, clue_id, activity_id
+    from tbl_clue_activity_relation
+    where clue_id=#{clueId}
+  </select>
+
+  <delete id="deleteRelationByClueId" parameterType="string">
+    delete from tbl_clue_activity_relation
+    where clue_id=#{clueId}
+  </delete>
 </mapper>
 
 

@@ -458,6 +458,11 @@
     from tbl_clue
     where id=#{id}
   </select>
+
+  <delete id="deleteClueById" parameterType="string">
+    delete from tbl_clue
+    where id=#{clueId}
+  </delete>
 </mapper>
 
 

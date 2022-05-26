@@ -3,7 +3,6 @@ package cn.edu.yibinu.crm.workbench.mapper;
 import cn.edu.yibinu.crm.workbench.domain.ClueRemark;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ClueRemarkMapper {
     /**
@@ -66,6 +65,13 @@ public interface ClueRemarkMapper {
      * @return 返回的就是一个列表
      */
     List<ClueRemark> selectClueRemarkList(String clueId);
+
+    /**
+     * 通过线索id查询出线索备注列表，没有连接查询
+     * @param clueId
+     * @return
+     */
+    List<ClueRemark> selectClueRemarkListForConvert(String clueId);
 }
 
 

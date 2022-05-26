@@ -182,6 +182,12 @@
     where clue_id=#{clueId}
     order by cr.create_time desc
   </select>
+
+  <select id="selectClueRemarkListForConvert" parameterType="string" resultMap="BaseResultMap">
+    select id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, clue_id
+    from tbl_clue_remark
+    where id=#{clueId}
+  </select>
 </mapper>
 
 

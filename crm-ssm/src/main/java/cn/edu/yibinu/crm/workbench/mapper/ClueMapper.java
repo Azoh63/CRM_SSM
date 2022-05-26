@@ -100,6 +100,13 @@ public interface ClueMapper {
      * @return
      */
     Clue selectClueByIdForConvert(String id);
+
+    /**
+     * 通过线索id查出相应线索，没有连接查询
+     * @param id
+     * @return
+     */
+    Clue selectClueById(String id);
 }
 
 

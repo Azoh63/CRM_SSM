@@ -13,7 +13,7 @@
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 	$(function(){
 		$("#isCreateTransaction").click(function(){
 			if(this.checked){
@@ -71,7 +71,36 @@
 				}
 			})
 
+		});
+
+		//日历控件
+		$(".myDate").datetimepicker({
+			language:"zh-CN",   //日历语言是中文
+			format:"yyyy-mm-dd",    //日历输入的格式
+			autoclose:true, //默认是false，这里需要开启
+			minView:"month",    //最小选择视图
+			todayBtn:true,  //'今日按钮'，需要开启
+			initialDate:new Date(),  //打开的时候是系统当前时间
+			clearBtn:true,   //readonly的同时还能删除
+			pickerPosition: "bottom-right"
+		});
+
+		//转换按钮的单击事件
+		$("#clueConvertBtn").click(function () {
+			//收集数据
+			var clueId = [[${#httpServletRequest.getAttribute("clue").id}]];
+			var isCreateTran = $("#isCreateTransaction").prop("checked");
+			var money = $.trim($("#amountOfMoney").val());
+			var name = $.trim($("#tradeName").val());
+			var expectedDate = $("#expectedClosingDate").val();
+			var stage = $("#stage").val();
+			var source = $("#activityHiddenId").val();
+
+			var data = "clueId="+clueId+"&isCreateTran="+isCreateTran+"&money="+money+"&name="+name+"&expectedDate="+expectedDate+"&stage="+stage+"&source="+source;
+			//发送的是同步请求
+			window.location.href="workbench/clue/convertClue.do?"+data;
 		})
+
 	});
 </script>
 
@@ -152,11 +181,11 @@
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="tradeName">交易名称</label>
-		    <input type="text" class="form-control" id="tradeName" value="动力节点-">
+		    <input type="text" class="form-control" id="tradeName" value="腾讯科技-">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="expectedClosingDate">预计成交日期</label>
-		    <input type="text" class="form-control" id="expectedClosingDate">
+		    <input type="text" class="form-control myDate" id="expectedClosingDate" readonly>
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="stage">阶段</label>
@@ -188,7 +217,7 @@
 		<b th:text="${#request.getAttribute('clue').owner}">龚某</b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
-		<input class="btn btn-primary" type="button" value="转换">
+		<input class="btn btn-primary" type="button" value="转换" id="clueConvertBtn">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="btn btn-default" type="button" value="取消">
 	</div>

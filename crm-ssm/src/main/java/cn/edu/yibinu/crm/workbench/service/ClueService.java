@@ -3,6 +3,7 @@ package cn.edu.yibinu.crm.workbench.service;
 import cn.edu.yibinu.crm.settings.domain.DicValue;
 import cn.edu.yibinu.crm.workbench.domain.Activity;
 import cn.edu.yibinu.crm.workbench.domain.Clue;
+import cn.edu.yibinu.crm.workbench.domain.Tran;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +28,8 @@ public interface ClueService {
     List<Activity> queryActivityByNameForConvert(String activityName);
 
     Activity queryActivityById(String activityId);
+
+    void doConvertClue(Map<String,Object> map);
+
+    Clue queryClueById(String id);
 }

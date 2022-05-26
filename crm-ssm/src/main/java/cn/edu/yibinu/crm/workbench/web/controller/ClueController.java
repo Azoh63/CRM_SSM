@@ -273,6 +273,29 @@ public class ClueController {
     public Object queryActivityById(String activityId){
         return clueService.queryActivityById(activityId);
     }
+
+    @RequestMapping("/workbench/clue/convertClue.do")
+    public String convertClue(String clueId,String isCreateTran,String money,String name,String expectedDate,String stage,String source,HttpSession session){
+        //通过线索id查询出线索
+        Clue clue = clueService.queryClueById(clueId);
+
+        //封装参数成map
+        Map<String,Object> map = new HashMap<>();
+        map.put("clue",clue);
+        map.put("isCreateTran",isCreateTran);
+        map.put("money",money);
+        map.put("name",name);
+        map.put("expectedDate",expectedDate);
+        map.put("stage",stage);
+        map.put("source",source);
+
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
+        map.put(Contents.SESSION_USER,user);
+
+        clueService.doConvertClue(map);
+
+        return "workbench/clue/index";
+    }
 }
 
 

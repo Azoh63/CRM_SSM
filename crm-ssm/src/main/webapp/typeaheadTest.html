@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="@{/}">
+    <meta charset="UTF-8">
+    <title>测试自动补全</title>
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+
+    <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#customerName").typeahead({
+               source:['宜宾学院','阿里巴巴','腾讯集团','京东']
+            });
+        });
+    </script>
+</head>
+<body>
+    <input type="text" id="customerName">
+</body>
+</html>

@@ -137,4 +137,20 @@
     where type_code=#{typeCode}
     order by order_no asc
   </select>
+
+  <select id="selectDicValueForTran" parameterType="string" resultMap="BaseResultMap">
+    select id,value,text,order_no,type_code
+    from tbl_dic_value
+    where type_code=#{typeCode}
+    order by order_no asc
+  </select>
+
+  <select id="selectAllDicValueByTypeCode" resultMap="BaseResultMap" parameterType="string">
+    select
+      id, value, text, order_no, type_code
+    from tbl_dic_value
+    where type_code=#{typeCode}
+    order by order_no asc
+  </select>
+
 </mapper>

@@ -236,4 +236,18 @@
       #{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},#{editBy},#{editTime},#{contactSummary},#{nextContactTime},#{description},#{address}
     )
   </insert>
+
+  <select id="selectCustomerByNameWithLike" parameterType="string" resultType="string">
+    select name
+    from tbl_customer
+    where name like '%' #{customerName} '%'
+  </select>
+
+  <select id="selectCustomerByName" parameterType="string" resultMap="BaseResultMap">
+    select
+      id, owner, name, website, phone, create_by, create_time, edit_by, edit_time, contact_summary,
+      next_contact_time, description, address
+    from tbl_customer
+    where name=#{customerName}
+  </select>
 </mapper>

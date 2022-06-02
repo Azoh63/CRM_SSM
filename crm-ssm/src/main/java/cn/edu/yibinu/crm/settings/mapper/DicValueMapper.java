@@ -59,6 +59,20 @@ public interface DicValueMapper {
      * @return
      */
     List<DicValue> selectDicValueForConvert(String typeCode);
+
+    /**
+     * tran页面请求数据字典值
+     * @param typeCode
+     * @return
+     */
+    List<DicValue> selectDicValueForTran(String typeCode);
+
+    /**
+     * 根据type_code查出所有的DicValue对象
+     * @return
+     */
+    List<DicValue> selectAllDicValueByTypeCode(String typeCode);
+
 }
 
 

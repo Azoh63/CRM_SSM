@@ -72,6 +72,7 @@
             <mvc:exclude-mapping path="/settings/qx/user/login.do"/>
             <mvc:exclude-mapping path="/settings/qx/user/registerPage.do"/>
             <mvc:exclude-mapping path="/settings/qx/user/register.do"/>
+            <mvc:exclude-mapping path="/workbench/settings/qx/user/toRegisterIndex.do"/>
 
             <bean class="cn.edu.yibinu.crm.settings.web.interceptor.LoginInterceptor" id="loginInterceptor"/>
         </mvc:interceptor>

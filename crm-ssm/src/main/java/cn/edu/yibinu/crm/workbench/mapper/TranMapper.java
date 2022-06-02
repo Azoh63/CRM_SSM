@@ -1,6 +1,11 @@
 package cn.edu.yibinu.crm.workbench.mapper;
 
+import cn.edu.yibinu.crm.workbench.domain.Customer;
 import cn.edu.yibinu.crm.workbench.domain.Tran;
+
+import javax.print.DocFlavor;
+import java.util.List;
+import java.util.Map;
 
 public interface TranMapper {
     /**
@@ -56,4 +61,45 @@ public interface TranMapper {
      * @return
      */
     int insertTran(Tran tran);
+
+    /**
+     * 新建一条完整的交易对象
+     * @param tran
+     * @return
+     */
+    int insertFullTran(Tran tran);
+
+    /**
+     * 给出页号和每一页的大小分页查询出所有的交易信息
+     * @param map 数据就是分页查询的页号和每一页的大小
+     * @return
+     */
+    List<Tran> selectTranListForPage(Map<String,Object> map);
+
+    /**
+     * 查询总记录条数
+     * @return
+     */
+    int selectTotalRowsForPage();
+
+    /**
+     * 根据tran的id查找出一个tran
+     * @return
+     */
+    Tran selectTranForDetail(String id);
+
+    /**
+     * 给echarts使用的数据
+     * @return
+     */
+    List<Tran> selectTranForEcharts();
+
+    /**
+     * 根据外键stageId来查询连接查询出stage名字
+     * @param id    交易的id
+     * @return
+     */
+    String selectStage(String id);
+
+    int insertLotsOfTrans(List<Tran> tranList);
 }

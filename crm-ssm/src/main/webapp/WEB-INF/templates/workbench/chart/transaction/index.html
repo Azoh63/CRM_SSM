@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="@{/}">
+    <meta charset="UTF-8">
+    <title>交易Echars统计图表</title>
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+
+    <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="jquery/echars/echarts.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            getEcharts();
+
+            $("#createBtn").click(function () {
+                //发出批量创建交易的请求
+                $.ajax({
+                    url:"workbench/chart/transaction/addLotsOfTrans.do",
+                    type:"post",
+                    success:function (data) {
+                        //插入成功后就重新刷新页面
+                        window.location.href="workbench/chart/transaction/index.do";
+                    }
+                })
+            });
+
+
+
+        }); //页面加载完毕
+
+
+        function getEcharts() {
+            $.ajax({
+                url:"workbench/chart/transaction/getCharts.do",
+                type:"get",
+                dataType:"json",
+                success:function (data) {
+                    //data:{"total":totalList,"dataList":data.dataList}
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('main'));
+
+                    // 指定图表的配置项和数据
+                    var option = {
+                        title: {
+                            text: '交易统计图'
+                        },
+
+                        series: [
+                            {
+                                name: 'Funnel',
+                                type: 'funnel',
+                                left: '10%',
+                                top: 60,
+                                bottom: 60,
+                                width: '80%',
+                                min: 0,
+                                max: 100,
+                                minSize: '0%',
+                                maxSize: '100%',
+                                sort: 'descending',
+                                gap: 2,
+                                label: {
+                                    show: true,
+                                    position: 'inside'
+                                },
+                                labelLine: {
+                                    length: 10,
+                                    lineStyle: {
+                                        width: 1,
+                                        type: 'solid'
+                                    }
+                                },
+                                itemStyle: {
+                                    borderColor: '#fff',
+                                    borderWidth: 1
+                                },
+                                emphasis: {
+                                    label: {
+                                        fontSize: 20
+                                    }
+                                },
+                                data:data
+                                /*[
+                                    //需要data:dataList
+                                    { value: 60, name: '01资质审查' },
+                                    { value: 40, name: '02需求分析' },
+                                    { value: 20, name: '03价值建议' },
+                                    { value: 80, name: '04确定决策者' },
+                                    { value: 100, name: '05提案/报价' }
+                                ]*/
+                            }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                }
+            });     //ajax
+        }
+    </script>
+</head>
+<body>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <div id="createManyTrans" align="center">
+        <input type="button" id="createBtn" value="点击批量创建交易">
+    </div>
+</body>
+</html>

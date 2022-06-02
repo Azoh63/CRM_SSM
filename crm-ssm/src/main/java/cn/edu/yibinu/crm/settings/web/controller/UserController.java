@@ -62,6 +62,10 @@ public class UserController {
         return "settings/dictionary/value/index";
     }
 
+    @RequestMapping("/workbench/settings/qx/user/toRegisterIndex.do")
+    public String toRegisterIndex(){
+        return "settings/qx/user/index";
+    }
     /**
      *
      * @param loginAct  登录账号
@@ -174,8 +178,5 @@ public class UserController {
         return returnObject;
     }
 
-    @RequestMapping("/workbench/settings/qx/user/toRegisterIndex.do")
-    public String toRegisterIndex(){
-        return "settings/qx/user/index";
-    }
+
 }
